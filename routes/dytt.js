@@ -20,7 +20,8 @@ let updateTime = new Date().toISOString();
 
 // 调用路径
 // const url = "https://www.ygdy8.net/index.html";
-const url = "https://www.dydytt.net/index.htm";
+// const url = "https://www.dydytt.net/index.htm";
+const url = "https://dytt.dytt8.net/index.htm";
 const headers = {
     "User-Agent":
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
@@ -35,7 +36,7 @@ const getData = (data) => {
             const nameLink  = $(item).find("a").eq(1);
             const date = $(item).find('font').text();
             const name = nameLink.text();
-            const href = url.replace("/index.html","") + nameLink.attr('href');
+            const href = url.replace("/index.html","").replace("/index.htm","") + nameLink.attr('href');
             if (!date.includes("手机浏览")) {
               dataList.push({
                 title: name,
