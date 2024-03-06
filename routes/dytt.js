@@ -36,7 +36,7 @@ const getData = (data) => {
             const date = $(item).find('font').text();
             const name = nameLink.text();
             const href = url.replace("/index.html","") + nameLink.attr('href');
-            if (date.includes("手机浏览")) {
+            if (!date.includes("手机浏览")) {
               dataList.push({
                 title: name,
                 url: href,
