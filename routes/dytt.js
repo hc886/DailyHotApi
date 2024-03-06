@@ -2,6 +2,7 @@ const Router = require("koa-router");
 const dyttRouter = new Router();
 const axios = require("axios");
 const cheerio = require("cheerio");
+const iconv = require('iconv-lite');
 const { get, set, del } = require("../utils/cacheData");
 
 // 接口信息
@@ -33,7 +34,7 @@ const getData = (data) => {
             const nameLink  = $(item).find("a").eq(1);
             const date = $(item).find('font').text();
             const name = nameLink.text();
-            const url = nameLink.attr('href');
+            const url = "https://www.dydytt.net" + nameLink.attr('href');
       
             dataList.push({
               title: name,
@@ -59,10 +60,11 @@ dyttRouter.get("/dytt", async (ctx) => {
       // 如果缓存中不存在数据
       console.log("从服务端重新获取电影天堂最新电影");
       // 从服务器拉取数据
-      const response = await axios.get(url, { headers });
-      console.log(response);
-      console.log(response.data);
-      data = getData(response.data);
+      const response = await axios.get(url, { headers ,responseType: 'arraybuffer'});
+      
+      // Decode the HTML content
+      const decodedHtml = iconv.decode(response.data, 'gb2312');
+      data = getData(decodedHtml);
       updateTime = new Date().toISOString();
       // 将数据写入缓存
       await set(cacheKey, data);
@@ -91,8 +93,11 @@ dyttRouter.get("/dytt/new", async (ctx) => {
   console.log("获取电影天堂最新电影 - 最新数据");
   try {
     // 从服务器拉取最新数据
-    const response = await axios.get(url, { headers });
-    const newData = getData(response.data);
+    const response = await axios.get(url, { headers ,responseType: 'arraybuffer'});
+      
+    // Decode the HTML content
+    const decodedHtml = iconv.decode(response.data, 'gb2312');
+    data = getData(decodedHtml);
     updateTime = new Date().toISOString();
     console.log("从服务端重新获取电影天堂最新电影");
 
