@@ -60,6 +60,8 @@ dyttRouter.get("/dytt", async (ctx) => {
       console.log("从服务端重新获取电影天堂最新电影");
       // 从服务器拉取数据
       const response = await axios.get(url, { headers });
+      console.log(response);
+      console.log(response.data);
       data = getData(response.data);
       updateTime = new Date().toISOString();
       // 将数据写入缓存
