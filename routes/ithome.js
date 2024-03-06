@@ -36,9 +36,10 @@ const getData = (data) => {
   const dataList = [];
   const $ = cheerio.load(data);
   try {
-    $(".rank-name").each(() => {
-      const type = $(this).data("rank-type");
-      const newListHtml = $(this).next(".rank-box").html();
+    $(".rank-name").each(function() {
+      const element = $(this);
+      const type = element.data("rank-type");
+      const newListHtml = element.next(".rank-box").html();
       cheerio
         .load(newListHtml)(".placeholder")
         .get()
@@ -47,7 +48,7 @@ const getData = (data) => {
             title: $(v).find(".plc-title").text(),
             img: $(v).find("img").attr("data-original"),
             time: $(v).find(".post-time").text(),
-            type: $(this).text(),
+            type: element.text(),
             typeName: type,
             hot: Number($(v).find(".review-num").text().replace(/\D/g, "")),
             url: replaceLink($(v).find("a").attr("href")),
@@ -55,16 +56,16 @@ const getData = (data) => {
           });
         });
       // dataList[type] = {
-      //   name: $(this).text(),
+      //   name: element.text(),
       //   total: newsList.length,
       //   list: newsList,
       // };
     });
     return dataList;
-  } catch (error) {
-    console.error("数据处理出错" + error);
-    return false;
-  }
+ } catch (error) {
+   console.error("数据处理出错" + error);
+   return false;
+ }
 };
 
 // IT之家热榜
