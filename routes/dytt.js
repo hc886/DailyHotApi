@@ -19,7 +19,7 @@ const cacheKey = "dyttData";
 let updateTime = new Date().toISOString();
 
 // 调用路径
-const url = "https://www.dydytt.net/index.htm";
+const url = "https://www.ygdy8.net/index.html";
 const headers = {
     "User-Agent":
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
@@ -34,12 +34,13 @@ const getData = (data) => {
             const nameLink  = $(item).find("a").eq(1);
             const date = $(item).find('font').text();
             const name = nameLink.text();
-            const url = "https://www.dydytt.net" + nameLink.attr('href');
+            const href = url.replace("/index.html","") + nameLink.attr('href');
       
             dataList.push({
               title: name,
-              url: url,
-              date:date,
+              url: href,
+              mobileUrl: href,
+              hot:date,
             });
           });
       return dataList;
@@ -97,7 +98,7 @@ dyttRouter.get("/dytt/new", async (ctx) => {
       
     // Decode the HTML content
     const decodedHtml = iconv.decode(response.data, 'gb2312');
-    data = getData(decodedHtml);
+    const newData = getData(decodedHtml);
     updateTime = new Date().toISOString();
     console.log("从服务端重新获取电影天堂最新电影");
 
