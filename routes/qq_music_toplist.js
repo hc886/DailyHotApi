@@ -2,14 +2,14 @@
  * @author: x-dr
  * @date: 2023-12-27
  * @customEditors: imsyy
- * @lastEditTime: 2024-01-02
+ * @lastEditTime: 2024-03-06
  */
 
 // const fs = require("fs");
 const Router = require("koa-router");
 const qqMusicRouter = new Router();
 const axios = require("axios");
-const cheerio = require("cheerio");
+// const cheerio = require("cheerio");
 const { get, set, del } = require("../utils/cacheData");
 
 // 接口信息
@@ -25,22 +25,23 @@ const cacheKey = "qqmusicData";
 // 调用时间
 let updateTime = new Date().toISOString();
 
-const url = "https://y.qq.com/n/ryqq/toplist/";
+//const url = "https://y.qq.com/n/ryqq/toplist/";
+const url = "https://i.y.qq.com/n2/m/share/details/toplist.html?ADTAG=myqq&from=myqq&channel=10007100&id=";
 
 const headers = {
-  authority: "y.qq.com",
-  referer: "https://www.google.com/",
+  authority: "i.y.qq.com",
+  referer: "https://i.y.qq.com/n2/m/index.html?tab=toplist",
   "user-agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1",
 };
 
 // 榜单类别
 const listType = {
-  1: {
+  2: {
     id: 62,
     name: "飙升榜",
   },
-  2: {
+  1: {
     id: 26,
     name: "热歌榜",
   },
@@ -66,26 +67,27 @@ const listType = {
 const getData = (data) => {
   if (!data) return false;
   const dataList = [];
-  const $ = cheerio.load(data);
+  // const $ = cheerio.load(data);
+  const pattern  = /firstPageData[\s\S]*?}}/i;
+  const match = data.match(pattern);
+  const songlist = JSON.parse(match[0].replace("firstPageData = ",""));
   // fs.writeFileSync('qq.html', $.html());
   try {
-    $(".songlist__item").each((i, e) => {
-      const item = cheerio.load($(e).html());
-      const title = item('a[class="songlist__cover"]').attr("title");
-      const urlPath = item('a[class="songlist__cover"]').attr("href");
-      const author = item('div[class="songlist__artist"]')
-        .text()
-        .replace(/(^\s*)|(\s*$)/g, "");
-      const songtime = item('div[class="songlist__time"]')
-        .text()
-        .replace(/(^\s*)|(\s*$)/g, "");
+    console.log(songlist.songInfoList.length)
+    songlist.songInfoList.forEach((e) => {
+      // const item = cheerio.load($(e).html());
+      const title = e.title;
+      const urlPath = e.mid;
+      const author = e.singername;
+      // const songtime = item('div[class="songlist__time"]')
+      //   .text()
+      //   .replace(/(^\s*)|(\s*$)/g, "");
       // const title = item('div[class="f-thide sgtl"]').text().replace(/(^\s*)|(\s*$)/g, "")
       dataList.push({
         title: title,
         desc: author,
-        songtime: songtime,
-        url: `https://y.qq.com${urlPath}`,
-        mobileUrl: `https://y.qq.com${urlPath}`,
+        url: `https://y.qq.com/n/ryqq/songDetail/${urlPath}`,
+        mobileUrl: `https://i.y.qq.com/v8/playsong.html?songmid=${urlPath}&_qmp=0`,
       });
     });
     return dataList;
