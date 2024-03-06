@@ -43,7 +43,7 @@ const getData = (data) => {
   try {
     const result = data.result[0];
     result.forEach((result) => {
-      const date = new Date(new Date(parseInt(result.postdate)*1000).getTime()).toLocaleString();
+      const date = new Date(new Date(parseInt(result.postdate)*1000).getTime()).toLocaleString("zh-CN");
       dataList.push({
         desc: result.author,
         hot: date,
