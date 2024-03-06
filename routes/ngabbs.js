@@ -43,9 +43,11 @@ const getData = (data) => {
   try {
     const result = data.result[0];
     result.forEach((result) => {
+      const date = new Date(new Date(parseInt(result.postdate)*1000).getTime()).toLocaleString();
       dataList.push({
-        author: result.author,
-        desc: result.subject,
+        desc: result.author,
+        hot: date,
+        title: result.subject,
         parent: result.parent["2"],
         tid: result.tid,
         comments: Number(result.replies),
